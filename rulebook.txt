@@ -1,0 +1,52 @@
+Guía de reglas y estructura para "El Exilio Solitario"
+Motor de texto para un juego de superviviencia de alta dificultad para un jugador
+Sin sistemas de niveles o progresión material, la supervivencia debe depender
+de la maestría mecánica y la gestión táctica de recursos y estados
+
+prohibiciones: 
+- no usar pilas, colas o árboles
+
+Arquitectura obligatoria:
+- El inventario debe ser una lista enlazada con una clase propia para
+sí misma y para sus nodos, debe tener sus propios métodos para insertar un objeto,
+buscar si existe un objeto específico y eliminar un elemento
+- El inventario debe tener un método para calcular el peso total de todos
+los objetos que el jugador lleva a cuestas, no se permiten bucles while o for
+
+Jerarquía de clases y herencia:
+- Clase base: Entidad
+- Clases hijas de Entidad: Jugador y Enemigo
+- Ambas clases hijas deben sobrescribir el método recibir_danio(self, cantidad)
+pero reaccionando de manera distinta
+- Sobrecargar los operadores de comparacion en la clase Entidad para que al
+comparar dos entidades, el sistema evalúe quién tiene la iniciativa en el combate
+basándose en el atributo "velocidad"
+- Sobrecarga del método __str__ para Jugadores y enemigos
+
+Uso de diccionarios para mecánicas:
+- El jugador (y potencialmente todas las entidades) posee un diccionario para manejar
+estados alterados, como el nivel de sangrado o agotamiento
+- Crear una función que se ejecute cada turno del juego y modifique la salud
+del jugador y las entidades presentes  dependiendo de los valores del diccionario.
+Si el sangrado es mayor a cero, resta salud.
+- Los enemigos tienen diccionarios para definir su "Tabla de botín" mapeando
+el nombre del objeto a su probabilidad de caer al ser derrotado. Utilizar el modulo random
+para determinar drops.
+
+Sistema de coordenadas:
+El mundo se representa conceptualmente en un mapa 2D, el jugador tiene un
+atributo posicion. Las posiciones deben ser estrictamente tuplas. Escribir una
+función que reciba dos posiciones y calcule las distancias entre ellas.
+
+Persistencia y manejo de errores:
+- Implementar función para guardar el estado del jugador en un archivo utilizando el
+módulo pickle
+- Implementar la función para cargar una partida
+- Envolver lectura de archivos en un bloque try... except, para evitar errores si el
+archivo no existe o si está corrupto, el juego no debe colapsar nunca, sino mandar mensajes
+de error.
+
+Ciclo de juego:
+El ciclo principal del juego leerá comandos introducidos por el usuario mediante el teclado
+- implementar comandos como "atacar", "estado", "inventario", "guardar" y "salir"
+- Aplicar métodos como .lower(), .strip(). o .split() para parsear los comandos del usuario.
